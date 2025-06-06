@@ -119,98 +119,98 @@ router.post('/post', (req, res) => {
 
     async function main() {
         try {
-            const authClient = await authorize();
-            const drive = google.drive({ version: 'v3', auth: authClient });
+            // const authClient = await authorize();
+            // const drive = google.drive({ version: 'v3', auth: authClient });
 
-            async function getOrCreateFolder(authClient, parentId, folderName) {
-                const drive = google.drive({ version: 'v3', auth: authClient });
-                const response = await drive.files.list({
-                    q: `'${parentId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-                    fields: 'files(id, name)',
-                    spaces: 'drive',
-                });
-                if (response.data.files.length > 0) {
-                    return response.data.files[0].id;
-                } else {
-                    const fileMetadata = {
-                        name: folderName,
-                        mimeType: 'application/vnd.google-apps.folder',
-                        parents: [parentId],
-                    };
-                    const file = await drive.files.create({
-                        resource: fileMetadata,
-                        fields: 'id',
-                    });
-                    return file.data.id;
-                }
-            }
+            // async function getOrCreateFolder(authClient, parentId, folderName) {
+            //     const drive = google.drive({ version: 'v3', auth: authClient });
+            //     const response = await drive.files.list({
+            //         q: `'${parentId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+            //         fields: 'files(id, name)',
+            //         spaces: 'drive',
+            //     });
+            //     if (response.data.files.length > 0) {
+            //         return response.data.files[0].id;
+            //     } else {
+            //         const fileMetadata = {
+            //             name: folderName,
+            //             mimeType: 'application/vnd.google-apps.folder',
+            //             parents: [parentId],
+            //         };
+            //         const file = await drive.files.create({
+            //             resource: fileMetadata,
+            //             fields: 'id',
+            //         });
+            //         return file.data.id;
+            //     }
+            // }
 
-            async function getParentFolderId(authClient, username) {
-                const now = new Date();
-                const year = now.getFullYear().toString();
-                const month = now.toLocaleString('default', { month: 'long' });
+            // async function getParentFolderId(authClient, username) {
+            //     const now = new Date();
+            //     const year = now.getFullYear().toString();
+            //     const month = now.toLocaleString('default', { month: 'long' });
               
 
-                const yearFolderId = await getOrCreateFolder(authClient, mainfolderid, year);
-                const monthFolderId = await getOrCreateFolder(authClient, yearFolderId, month);
-                const userFolderName = `${username}`;
-                const userFolderId = await getOrCreateFolder(authClient, monthFolderId, userFolderName);
+            //     const yearFolderId = await getOrCreateFolder(authClient, mainfolderid, year);
+            //     const monthFolderId = await getOrCreateFolder(authClient, yearFolderId, month);
+            //     const userFolderName = `${username}`;
+            //     const userFolderId = await getOrCreateFolder(authClient, monthFolderId, userFolderName);
 
-                return userFolderId;
-            }
-            async function createFolder(authClient, parentId, folderName) {
-                const drive = google.drive({ version: 'v3', auth: authClient });
-                const fileMetadata = {
-                    name: folderName,
-                    mimeType: 'application/vnd.google-apps.folder',
-                    parents: [parentId], 
-                };
+            //     return userFolderId;
+            // }
+            // async function createFolder(authClient, parentId, folderName) {
+            //     const drive = google.drive({ version: 'v3', auth: authClient });
+            //     const fileMetadata = {
+            //         name: folderName,
+            //         mimeType: 'application/vnd.google-apps.folder',
+            //         parents: [parentId], 
+            //     };
             
-                try {
-                    const file = await drive.files.create({
-                        resource: fileMetadata,
-                        fields: 'id',  
-                    });
-                    return file.data.id; 
-                } catch (error) {
-                    console.error('Error creating folder:', error);
-                    throw new Error('Failed to create folder.');
-                }
-            }
+            //     try {
+            //         const file = await drive.files.create({
+            //             resource: fileMetadata,
+            //             fields: 'id',  
+            //         });
+            //         return file.data.id; 
+            //     } catch (error) {
+            //         console.error('Error creating folder:', error);
+            //         throw new Error('Failed to create folder.');
+            //     }
+            // }
             
 
-            parentFolderId = await getParentFolderId(authClient, username);
+            // parentFolderId = await getParentFolderId(authClient, username);
 
-            if (!parentFolderId) {
-                return res.status(400).json({ error: 'Invalid username. Parent folder ID not found.' });
-            }
+            // if (!parentFolderId) {
+            //     return res.status(400).json({ error: 'Invalid username. Parent folder ID not found.' });
+            // }
 
-            console.log("parent folder id ----", parentFolderId);
+            // console.log("parent folder id ----", parentFolderId);
 
-            const cleanPhone = emergencycontactnumber.replace(/^\+/, '');
+            // const cleanPhone = emergencycontactnumber.replace(/^\+/, '');
 
 
-            emergencycontactphone =JSON.parse(emergencycontactnumber);
-            phone=emergencycontactphone.phone;
-            console.log("phoneNumberphoneNumber---",phone);
+            // emergencycontactphone =JSON.parse(emergencycontactnumber);
+            // phone=emergencycontactphone.phone;
+            // console.log("phoneNumberphoneNumber---",phone);
 
-            let appointmentFolderName = `${firstname}_${phone}_${typeofservice}_${appointmentDate}`;
-            if (minor && minor.toLowerCase() === 'true') {
-                appointmentFolderName += `_Minor`;
-            }
+            // let appointmentFolderName = `${firstname}_${phone}_${typeofservice}_${appointmentDate}`;
+            // if (minor && minor.toLowerCase() === 'true') {
+            //     appointmentFolderName += `_Minor`;
+            // }
 
-            newFolderId = await createFolder(authClient, parentFolderId, appointmentFolderName);
-            console.log("newFolderId---",newFolderId);
-            const newFolderIdforGoooleDrive = "https://drive.google.com/drive/folders/" + newFolderId;
+            // newFolderId = await createFolder(authClient, parentFolderId, appointmentFolderName);
+            // console.log("newFolderId---",newFolderId);
+            // const newFolderIdforGoooleDrive = "https://drive.google.com/drive/folders/" + newFolderId;
 
-            const images = [
-                { data: initialsImg, name: `initialsImg_${uuidv4()}.png` },
-                { data: signatureurl, name: `signatureurl_${uuidv4()}.png` },
-            ];
-            if (gaurdianInitialsImg) {
-                images.push({ data: gaurdianInitialsImg, name: `gaurdianInitialsImg_${uuidv4()}.png` });
-                images.push({ data: gaurdianSignature, name: `gaurdianSignature_${uuidv4()}.png` });
-            }
+            // const images = [
+            //     { data: initialsImg, name: `initialsImg_${uuidv4()}.png` },
+            //     { data: signatureurl, name: `signatureurl_${uuidv4()}.png` },
+            // ];
+            // if (gaurdianInitialsImg) {
+            //     images.push({ data: gaurdianInitialsImg, name: `gaurdianInitialsImg_${uuidv4()}.png` });
+            //     images.push({ data: gaurdianSignature, name: `gaurdianSignature_${uuidv4()}.png` });
+            // }
 
             db.run(
                 'INSERT INTO servicecategory (username, minor, typeofservice, body_location, medicalhistory, emergencycontactnumber, doctor_information, WaiverRelease_url, HoldHarmlessAgreement_url, firstname, lastname, before_image, after_image, id_url, ArtistPiercerNames, Consent_guard, guardian_info, guardian_signature, brief_description, gaurdian_initials, Date, process_step, Consent_form, gaurdian_id, count, folder_id, google_drive_folder_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
