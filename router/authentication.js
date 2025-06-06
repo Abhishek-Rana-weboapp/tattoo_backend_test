@@ -188,7 +188,7 @@ router.post("/signup", async (req, res) => {
 
       try {
         // Google Drive folder creation
-        const authClient = await authorize();
+        // const authClient = await authorize();
         const parentFolderId = "1uomtQA-RL-WX1Kv8PC7e6YYGPgZydctP";
         const newFolderId = null;
 
